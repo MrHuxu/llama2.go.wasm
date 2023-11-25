@@ -62,47 +62,37 @@ func prepare(_ js.Value, inputs []js.Value) interface{} {
 }
 
 func generate(_ js.Value, inputs []js.Value) interface{} {
-	prompt := inputs[0].String()
+	prompt := inputs[1].String()
 	promptTokens := vocab.Encode(prompt)
 	timeStart := time.Now()
 	pos, token := 0, 1
 	for pos < llmSteps {
-		// forward the transformer to get logits for the next token
 		llama2.Transformer(token, pos, config, runState, transformerWeights)
 
 		var next int
 		if pos < len(promptTokens) {
 			next = promptTokens[pos]
 		} else {
-			// sample the next token
 			if llmTemperature == 0 {
-				// greedy argmax sampling
 				next = nn.ArgMax(runState.Logits)
 			} else {
-				// apply the temperature to the logits
 				for q := 0; q < config.VocabSize; q++ {
 					runState.Logits[q] /= float32(llmTemperature)
 				}
-				// apply softmax to the logits to the probabilities for next token
 				nn.SoftMax(runState.Logits)
-				// we now want to sample from this distribution to get the next token
 				if llmTopP <= 0 || llmTopP >= 1 {
-					// simply sample from the predicted probability distribution
 					next = nn.Sample(runState.Logits)
 				} else {
-					// top-p (nucleus) sampling, clamping the least likely tokens to zero
 					next = nn.SampleTopP(runState.Logits, float32(llmTopP))
 				}
 			}
 		}
 		pos++
 
-		// data-dependent terminating condition: the BOS (1) token delimits sequences
 		if next == 1 {
 			break
 		}
 
-		// following BOS (1) token, sentencepiece decoder strips any leading whitespace
 		var tokenStr string
 		if token == 1 && vocab.Words[next][0] == ' ' {
 			tokenStr = vocab.Words[next][1:]
@@ -110,9 +100,8 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 			tokenStr = vocab.Words[next]
 		}
 		fmt.Println(tokenStr)
-		appendText(tokenStr)
+		inputs[0].Invoke(tokenStr)
 
-		// advance forward
 		token = next
 	}
 	fmt.Println()
@@ -120,14 +109,6 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 	fmt.Printf("achieved tok/s: %f\n", float64(pos-1)/time.Since(timeStart).Seconds())
 
 	return nil
-}
-
-const answerElementClass = "answer"
-
-func appendText(text string) {
-	answerElements := js.Global().Get("document").Call("getElementsByClassName", answerElementClass)
-	lastAnswerElement := answerElements.Index(answerElements.Length() - 1)
-	lastAnswerElement.Set("textContent", lastAnswerElement.Get("textContent").String()+text)
 }
 
 func registerFunctions() {

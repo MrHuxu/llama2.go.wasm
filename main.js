@@ -1,26 +1,3 @@
-const tokenizerFileRequest = await fetch(self.location.origin + '/' + 'models/tokenizer.bin');
-const tokenizerFileContent = await tokenizerFileRequest.arrayBuffer();
-const tokenizerFileLength = parseInt(tokenizerFileRequest.headers.get('Content-Length'));
-
-const modelURL = isLocalhost() ? self.location.origin + '/' + 'models/stories15M.bin'
-    : 'https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin';
-const modelFileRequest = await fetch(modelURL);
-const modelFileContent = await modelFileRequest.arrayBuffer();
-const modelFileLength = parseInt(modelFileRequest.headers.get('Content-Length'));
-
-function isLocalhost() {
-    var url = self.location.origin;
-    return url.indexOf('127.0.0.1') !== -1 || url.indexOf('localhost') !== -1;
-}
-
-const go = new Go();
-
-const wasmResponse = await fetch('main.wasm');
-const wasmBytes = await wasmResponse.arrayBuffer();
-const wasm = await WebAssembly.instantiate(wasmBytes, go.importObject);
-go.run(wasm.instance);
-
-
 const answerElementClass = "answer";
 const appendText = text => {
     const answerElements = document.getElementsByClassName(answerElementClass);
@@ -28,12 +5,56 @@ const appendText = text => {
     answerElement.textContent += text;
 }
 
-prepare(
-    new Uint8Array(modelFileContent),
-    modelFileLength,
-    new Uint8Array(tokenizerFileContent),
-    tokenizerFileLength,
-);
+var worker = new Worker('worker.js');
+worker.addEventListener('message', ({ data }) => {
+    const { type, payload } = data;
 
-generate('once upon a time');
+    if (type === 'append') {
+        appendText(payload);
+    }
+});
 
+const input = document.querySelector('input');
+const submitButton = document.getElementById('submit');
+
+const disableSubmit = () => {
+    submitButton.disabled = true;
+    submitButton.classList.add('opacity-50');
+}
+const enableSubmit = () => {
+    submitButton.disabled = false;
+    submitButton.classList.remove('opacity-50');
+}
+
+const handleInput = () => {
+    if (input.value.trim() === '') {
+        disableSubmit();
+    } else {
+        enableSubmit();
+    }
+}
+
+const container = document.querySelector('.container');
+const flexDiv = document.querySelector('.container > div.flex');
+const handleButtonClick = () => {
+    const userInput = input.value;
+
+    const newPrompt = document.createElement('div');
+    newPrompt.classList.add('prompt', 'bg-gray-100', 'rounded-lg', 'my-2', 'py-2', 'px-4', 'self-end');
+    newPrompt.textContent = userInput === '' ? 'User input' : userInput;
+    flexDiv.appendChild(newPrompt);
+    input.value = '';
+    disableSubmit();
+
+    const newAnswer = document.createElement('div');
+    newAnswer.classList.add('answer', 'bg-green-100', 'rounded-lg', 'my-2', 'py-2', 'px-4', 'self-start');
+    newAnswer.textContent = '';
+    flexDiv.appendChild(newAnswer);
+
+    container.scrollTop = container.scrollHeight;
+
+    worker.postMessage({
+        type: 'generate',
+        payload: userInput
+    });
+}

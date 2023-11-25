@@ -17,15 +17,13 @@
       padding-bottom: 10px;
     }
   </style>
-  <script src="./static/wasm_exec.js"></script>
-  <script src="main.js" type="module"></script>
 </head>
 
 <body class="bg-blue-100 text-gray-700">
   <header class="bg-blue-500 py-4 fixed top-0 left-0 right-0">
     <h1 class="text-2xl text-white text-center">llama2.go.wasm</h1>
   </header>
-  <main class="container mx-auto mt-16"> <!-- Add mt-16 to account for the fixed header -->
+  <main class="container mx-auto mt-16">
     <div class="flex flex-col space-y-4">
       <div class="prompt bg-gray-100 rounded-lg my-2 py-2 px-4 self-end">once upon a time</div>
       <div class="answer bg-green-100 rounded-lg my-2 py-2 px-4 self-start"></div>
@@ -35,52 +33,13 @@
     <input type="text" class="w-full rounded-lg border-gray-300 px-4 py-2 mr-2" placeholder="Enter your message"
       oninput="handleInput()" />
     <button id='submit' class="bg-blue-500 text-white px-4 py-2 rounded-lg opacity-50" onclick="handleButtonClick()"
-      disabled>Send</button>
+      disabled>Submit</button>
   </footer>
 
-  <script>
-    const input = document.querySelector('input');
-    const sendButton = document.getElementById('submit');
 
-    const disableSubmit = () => {
-      sendButton.disabled = true;
-      sendButton.classList.add('opacity-50');
-    }
-    const enableSubmit = () => {
-      sendButton.disabled = false;
-      sendButton.classList.remove('opacity-50');
-    }
-
-    const handleInput = () => {
-      if (input.value.trim() === '') {
-        disableSubmit();
-      } else {
-        enableSubmit();
-      }
-    }
-
-    const container = document.querySelector('.container');
-    const flexDiv = document.querySelector('.container > div.flex');
-    const handleButtonClick = () => {
-      const userInput = input.value;
-
-      const newPrompt = document.createElement('div');
-      newPrompt.classList.add('prompt', 'bg-gray-100', 'rounded-lg', 'my-2', 'py-2', 'px-4', 'self-end');
-      newPrompt.textContent = userInput === '' ? 'User input' : userInput;
-      flexDiv.appendChild(newPrompt);
-      input.value = '';
-      disableSubmit();
-
-      const newAnswer = document.createElement('div');
-      newAnswer.classList.add('answer', 'bg-green-100', 'rounded-lg', 'my-2', 'py-2', 'px-4', 'self-start');
-      newAnswer.textContent = '';
-      flexDiv.appendChild(newAnswer);
-
-      container.scrollTop = container.scrollHeight;
-
-      generate(userInput);
-    }
-  </script>
 </body>
+
+<script src="./static/wasm_exec.js"></script>
+<script src="main.js"></script>
 
 </html>
