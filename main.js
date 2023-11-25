@@ -33,10 +33,16 @@ const handleInput = () => {
         enableSubmit();
     }
 }
+const handleInputKeyPress = event => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        handleSubmit();
+    }
+}
 
 const container = document.querySelector('.container');
 const flexDiv = document.querySelector('.container > div.flex');
-const handleButtonClick = () => {
+const handleSubmit = () => {
     const userInput = input.value;
 
     const newPrompt = document.createElement('div');
