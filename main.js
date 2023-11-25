@@ -1,5 +1,5 @@
 const answerElementClass = "answer";
-const appendText = text => {
+const appendAnswerText = text => {
     const answerElements = document.getElementsByClassName(answerElementClass);
     const answerElement = answerElements[answerElements.length - 1];
     answerElement.textContent += text;
@@ -9,23 +9,25 @@ var worker = new Worker('worker.js');
 worker.addEventListener('message', ({ data }) => {
     const { type, payload } = data;
 
-    if (type === 'append') {
-        appendText(payload);
+    switch (type) {
+        case 'appendAnswerText':
+            appendAnswerText(payload);
+            break;
+        case 'enableInput':
+            enableInput();
+            break;
     }
 });
 
 const input = document.querySelector('input');
 const submitButton = document.getElementById('submit');
 
-const disableSubmit = () => {
-    submitButton.disabled = true;
-    submitButton.classList.add('opacity-50');
+const enableInput = () => {
+    input.disabled = false;
 }
-const enableSubmit = () => {
-    submitButton.disabled = false;
-    submitButton.classList.remove('opacity-50');
+const disableInput = () => {
+    input.disabled = true;
 }
-
 const handleInput = () => {
     if (input.value.trim() === '') {
         disableSubmit();
@@ -40,9 +42,19 @@ const handleInputKeyPress = event => {
     }
 }
 
+const disableSubmit = () => {
+    submitButton.disabled = true;
+    submitButton.classList.add('opacity-50');
+}
+const enableSubmit = () => {
+    submitButton.disabled = false;
+    submitButton.classList.remove('opacity-50');
+}
 const container = document.querySelector('.container');
 const flexDiv = document.querySelector('.container > div.flex');
 const handleSubmit = () => {
+    disableInput();
+    disableSubmit();
     const userInput = input.value;
 
     const newPrompt = document.createElement('div');
@@ -50,7 +62,6 @@ const handleSubmit = () => {
     newPrompt.textContent = userInput === '' ? 'User input' : userInput;
     flexDiv.appendChild(newPrompt);
     input.value = '';
-    disableSubmit();
 
     const newAnswer = document.createElement('div');
     newAnswer.classList.add('answer', 'bg-green-100', 'rounded-lg', 'my-2', 'py-2', 'px-4', 'self-start');
@@ -60,7 +71,7 @@ const handleSubmit = () => {
     container.scrollTop = container.scrollHeight;
 
     worker.postMessage({
-        type: 'generate',
+        type: 'generateAnswer',
         payload: userInput
     });
 }

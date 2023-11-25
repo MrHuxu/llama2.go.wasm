@@ -62,7 +62,7 @@ func prepare(_ js.Value, inputs []js.Value) interface{} {
 }
 
 func generate(_ js.Value, inputs []js.Value) interface{} {
-	prompt := inputs[1].String()
+	prompt := inputs[0].String()
 	promptTokens := vocab.Encode(prompt)
 	timeStart := time.Now()
 	pos, token := 0, 1
@@ -100,7 +100,7 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 			tokenStr = vocab.Words[next]
 		}
 		fmt.Println(tokenStr)
-		inputs[0].Invoke(tokenStr)
+		inputs[1].Invoke(tokenStr)
 
 		token = next
 	}
@@ -108,6 +108,7 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 
 	fmt.Printf("achieved tok/s: %f\n", float64(pos-1)/time.Since(timeStart).Seconds())
 
+	inputs[2].Invoke()
 	return nil
 }
 

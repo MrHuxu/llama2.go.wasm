@@ -7,12 +7,18 @@ const isLocalhost = () => {
     return url.indexOf('127.0.0.1') !== -1 || url.indexOf('localhost') !== -1;
 }
 
-const append = text => {
+const appendAnswerText = text => {
     self.postMessage({
-        type: 'append',
+        type: 'appendAnswerText',
         payload: text
     });
 };
+const enableInput = text => {
+    self.postMessage({
+        type: 'enableInput'
+    });
+};
+
 
 const modelURL = isLocalhost() ? self.location.origin + '/' + 'models/stories15M.bin'
     : 'https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin';
@@ -48,13 +54,13 @@ Promise.all([
         tokenizerFileLength,
     );
 
-    generate(append, 'once upon a time');
+    generate('once upon a time', appendAnswerText, enableInput);
 });
 
 self.addEventListener('message', ({ data }) => {
     const { type, payload } = data;
 
-    if (type === 'generate') {
-        generate(append, payload);
+    if (type === 'generateAnswer') {
+        generate(payload, appendAnswerText, enableInput);
     }
 })
