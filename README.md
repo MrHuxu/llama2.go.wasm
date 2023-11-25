@@ -4,7 +4,7 @@
 
 ## Description
 
-llama2.go.wasm is a web application that combines Go and JavaScript using WebAssembly (WASM). It enables you to perform prompt inference locally in your browser, inspired by the llama2.c project.
+llama2.go.wasm is a web application that combines Go and JavaScript using WebAssembly (WASM). It enables you to perform prompt inference locally in your browser, inspired by the [llama2.c](https://github.com/karpathy/llama2.c) project.
 
 ## Features
 

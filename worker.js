@@ -19,14 +19,13 @@ const enableInput = text => {
     });
 };
 
-
+const tokenizerURL = self.location.origin + '/' + 'models/tokenizer.bin';
 const modelURL = isLocalhost() ? self.location.origin + '/' + 'models/stories15M.bin'
     : 'https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin';
 
 let tokenizerFileLength, tokenizerFileContent, modelFileLength, modelFileContent;
 Promise.all([
-    fetch(self.location.origin + '/' + 'models/tokenizer.bin'),
-    fetch(modelURL)
+    fetch(tokenizerURL), fetch(modelURL)
 ]).then(([tokenizerFileRequest, modelFileRequest]) => {
     tokenizerFileLength = parseInt(tokenizerFileRequest.headers.get('Content-Length'));
     modelFileLength = parseInt(modelFileRequest.headers.get('Content-Length'));
