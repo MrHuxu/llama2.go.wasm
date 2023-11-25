@@ -1,10 +1,12 @@
 # llama2.go.wasm
 
-![Project Logo](placeholder-image.png)
+<p align="center">
+  <img src="https://github.com/MrHuxu/llama2.go.wasm/blob/master/static/logo.jpeg" alt="drawing" width="350"/>
+</p>
 
 ## Description
 
-llama2.go.wasm is a web application that combines Go and JavaScript using WebAssembly (WASM). It enables you to perform prompt inference locally in your browser, inspired by the [llama2.c](https://github.com/karpathy/llama2.c) project.
+llama2.go.wasm is a web application that combines Go and JavaScript using WebAssembly (WASM). It enables you to perform prompt inference locally in your browser, inspired by the [llama2.c](https://github.com/karpathy/llama2.c) and [llama2.c-web](https://github.com/dmarcos/llama2.c-web) project.
 
 ## Features
 
