@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Title</title>
+  <title>Llama2 Go WASM</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     body {
@@ -16,13 +16,59 @@
 </head>
 
 <body class="bg-blue-100 text-gray-700">
-  <header class="bg-blue-500 py-4">
+  <header class="bg-blue-500 py-4 fixed top-0 left-0 right-0">
     <h1 class="text-2xl text-white text-center">llama2.go.wasm</h1>
   </header>
-  <main class="container mx-auto mt-8">
-    <p><strong class="font-bold">Prompt: Once upon a time</strong></p>
-    <div id="generated-content" class="mt-4"></div>
+  <main class="container mx-auto mt-16"> <!-- Add mt-16 to account for the fixed header -->
+    <div class="prompt bg-gray-100 rounded-lg my-2 py-2 px-4">once upon a time</div>
+    <div class="answer bg-green-100 rounded-lg my-2 py-2 px-4"></div>
   </main>
+  <footer class="fixed bottom-0 left-0 right-0 bg-gray-200 p-4 flex items-center">
+    <input type="text" class="w-full rounded-lg border-gray-300 px-4 py-2 mr-2" placeholder="Enter your message">
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg" onclick="handleButtonClick()">Send</button>
+  </footer>
+
+  <script>
+    // Function to handle the button click event
+    function handleButtonClick() {
+      // Get the necessary elements
+      const container = document.querySelector('.container');
+      const input = document.querySelector('input');
+
+      // Get the user input
+      const userInput = input.value;
+
+      // Create new prompt and answer elements
+      const newPrompt = document.createElement('div');
+      newPrompt.classList.add(
+        'prompt',
+        'bg-gray-100',
+        'rounded-lg',
+        'my-2',
+        'py-2',
+        'px-4'
+      );
+      newPrompt.textContent = userInput;
+
+      const newAnswer = document.createElement('div');
+      newAnswer.classList.add(
+        'answer',
+        'bg-green-100',
+        'rounded-lg',
+        'my-2',
+        'py-2',
+        'px-4'
+      );
+      newAnswer.textContent = 'AI answer'; // Replace 'AI answer' with the actual AI response
+
+      // Append the new elements to the containers
+      container.appendChild(newPrompt);
+      container.appendChild(newAnswer);
+
+      // Clear the input field
+      input.value = '';
+    }
+  </script>
 </body>
 
 </html>

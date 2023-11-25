@@ -21,13 +21,14 @@ const wasm = await WebAssembly.instantiate(wasmBytes, go.importObject);
 go.run(wasm.instance);
 
 
-const generatedContentElementID = "generated-content";
-const generatedContentElement = document.getElementById(generatedContentElementID);
+const answerElementClass = "answer";
 const appendText = text => {
-    generatedContentElement.textContent += text;
+    const answerElements = document.getElementsByClassName(answerElementClass);
+    const answerElement = answerElements[answerElements.length - 1];
+    answerElement.textContent += text;
 }
 
-let [token, pos] = prepare(
+let [pos, token] = prepare(
     new Uint8Array(modelFileContent),
     modelFileLength,
     new Uint8Array(tokenizerFileContent),
@@ -35,8 +36,9 @@ let [token, pos] = prepare(
     'Once upon a time'
 );
 
-while (pos < 256 && token != -1) {
-    const result = generate(appendText, token, pos);
-    token = result[0];
-    pos = result[1];
-}
+// while (pos < 256 && token != -1) {
+//     const result = generate(appendText, pos, token);
+//     pos = result[0];
+//     token = result[1];
+// }
+

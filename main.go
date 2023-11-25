@@ -31,6 +31,15 @@ func prepare(_ js.Value, inputs []js.Value) interface{} {
 	modelFileBytes := make([]byte, modelFileDataLength)
 	js.CopyBytesToGo(modelFileBytes, modelFileData)
 
+	var err error
+	config, err = llama2.NewConfigFromCheckpoint(bytes.NewReader(modelFileBytes))
+	if err != nil {
+		log.Fatalf("cannot read config: %s", err)
+	}
+	log.Printf("config: %+v \n", config)
+
+	modelFileBytes = modelFileBytes[28:]
+
 	tokenizerFileData := inputs[2]
 	tokenizerFileDataLength := inputs[3].Int()
 	tokenizerFileBytes := make([]byte, tokenizerFileDataLength)
@@ -38,12 +47,6 @@ func prepare(_ js.Value, inputs []js.Value) interface{} {
 
 	prompt = inputs[4].String()
 
-	var err error
-	config, err = llama2.NewConfigFromCheckpoint(bytes.NewReader(modelFileBytes))
-	if err != nil {
-		log.Fatalf("cannot read config: %s", err)
-	}
-	log.Printf("config: %#v\n", config)
 	runState = llama2.NewRunState(config)
 
 	isSharedWeights := config.VocabSize > 0
@@ -58,12 +61,12 @@ func prepare(_ js.Value, inputs []js.Value) interface{} {
 		llmSteps = config.SeqLen
 	}
 
-	return []interface{}{1, 0}
+	return []interface{}{0, 1}
 }
 
 func generate(_ js.Value, inputs []js.Value) interface{} {
-	token := inputs[1].Int()
-	pos := inputs[2].Int()
+	pos := inputs[1].Int()
+	token := inputs[2].Int()
 	llama2.Transformer(token, pos, config, runState, transformerWeights)
 
 	promptTokens := vocab.Encode(prompt)
@@ -88,7 +91,7 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 	pos++
 
 	if next == 1 {
-		return []interface{}{1, 0}
+		return []interface{}{0, -1}
 	}
 
 	var tokenStr string
@@ -101,7 +104,7 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 	go inputs[0].Invoke(tokenStr)
 
 	token = next
-	return []interface{}{token, pos}
+	return []interface{}{pos, token}
 }
 
 func registerFunctions() {
