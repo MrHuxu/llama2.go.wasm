@@ -28,17 +28,12 @@ const appendText = text => {
     answerElement.textContent += text;
 }
 
-let [pos, token] = prepare(
+prepare(
     new Uint8Array(modelFileContent),
     modelFileLength,
     new Uint8Array(tokenizerFileContent),
     tokenizerFileLength,
-    'Once upon a time'
 );
 
-// while (pos < 256 && token != -1) {
-//     const result = generate(appendText, pos, token);
-//     pos = result[0];
-//     token = result[1];
-// }
+generate('once upon a time');
 

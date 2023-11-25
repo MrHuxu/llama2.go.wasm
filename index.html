@@ -10,6 +10,12 @@
     body {
       font-family: Arial, sans-serif;
     }
+
+    .container {
+      height: calc(100vh - 64px - 72px);
+      overflow: auto;
+      padding-bottom: 10px;
+    }
   </style>
   <script src="./static/wasm_exec.js"></script>
   <script src="main.js" type="module"></script>
@@ -20,53 +26,59 @@
     <h1 class="text-2xl text-white text-center">llama2.go.wasm</h1>
   </header>
   <main class="container mx-auto mt-16"> <!-- Add mt-16 to account for the fixed header -->
-    <div class="prompt bg-gray-100 rounded-lg my-2 py-2 px-4">once upon a time</div>
-    <div class="answer bg-green-100 rounded-lg my-2 py-2 px-4"></div>
+    <div class="flex flex-col space-y-4">
+      <div class="prompt bg-gray-100 rounded-lg my-2 py-2 px-4 self-end">once upon a time</div>
+      <div class="answer bg-green-100 rounded-lg my-2 py-2 px-4 self-start"></div>
+    </div>
   </main>
   <footer class="fixed bottom-0 left-0 right-0 bg-gray-200 p-4 flex items-center">
-    <input type="text" class="w-full rounded-lg border-gray-300 px-4 py-2 mr-2" placeholder="Enter your message">
-    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg" onclick="handleButtonClick()">Send</button>
+    <input type="text" class="w-full rounded-lg border-gray-300 px-4 py-2 mr-2" placeholder="Enter your message"
+      oninput="handleInput()" />
+    <button id='submit' class="bg-blue-500 text-white px-4 py-2 rounded-lg opacity-50" onclick="handleButtonClick()"
+      disabled>Send</button>
   </footer>
 
   <script>
-    // Function to handle the button click event
-    function handleButtonClick() {
-      // Get the necessary elements
-      const container = document.querySelector('.container');
-      const input = document.querySelector('input');
+    const input = document.querySelector('input');
+    const sendButton = document.getElementById('submit');
 
-      // Get the user input
+    const disableSubmit = () => {
+      sendButton.disabled = true;
+      sendButton.classList.add('opacity-50');
+    }
+    const enableSubmit = () => {
+      sendButton.disabled = false;
+      sendButton.classList.remove('opacity-50');
+    }
+
+    const handleInput = () => {
+      if (input.value.trim() === '') {
+        disableSubmit();
+      } else {
+        enableSubmit();
+      }
+    }
+
+    const container = document.querySelector('.container');
+    const flexDiv = document.querySelector('.container > div.flex');
+    const handleButtonClick = () => {
       const userInput = input.value;
 
-      // Create new prompt and answer elements
       const newPrompt = document.createElement('div');
-      newPrompt.classList.add(
-        'prompt',
-        'bg-gray-100',
-        'rounded-lg',
-        'my-2',
-        'py-2',
-        'px-4'
-      );
-      newPrompt.textContent = userInput;
+      newPrompt.classList.add('prompt', 'bg-gray-100', 'rounded-lg', 'my-2', 'py-2', 'px-4', 'self-end');
+      newPrompt.textContent = userInput === '' ? 'User input' : userInput;
+      flexDiv.appendChild(newPrompt);
+      input.value = '';
+      disableSubmit();
 
       const newAnswer = document.createElement('div');
-      newAnswer.classList.add(
-        'answer',
-        'bg-green-100',
-        'rounded-lg',
-        'my-2',
-        'py-2',
-        'px-4'
-      );
-      newAnswer.textContent = 'AI answer'; // Replace 'AI answer' with the actual AI response
+      newAnswer.classList.add('answer', 'bg-green-100', 'rounded-lg', 'my-2', 'py-2', 'px-4', 'self-start');
+      newAnswer.textContent = '';
+      flexDiv.appendChild(newAnswer);
 
-      // Append the new elements to the containers
-      container.appendChild(newPrompt);
-      container.appendChild(newAnswer);
+      container.scrollTop = container.scrollHeight;
 
-      // Clear the input field
-      input.value = '';
+      generate(userInput);
     }
   </script>
 </body>

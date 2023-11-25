@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"syscall/js"
+	"time"
 
 	nn "github.com/nikolaydubina/llama2.go/exp/nnfast"
 	"github.com/nikolaydubina/llama2.go/llama2"
@@ -21,8 +22,6 @@ var (
 	runState           llama2.RunState
 	transformerWeights llama2.TransformerWeights
 	vocab              llama2.Vocab
-
-	prompt string
 )
 
 func prepare(_ js.Value, inputs []js.Value) interface{} {
@@ -45,8 +44,6 @@ func prepare(_ js.Value, inputs []js.Value) interface{} {
 	tokenizerFileBytes := make([]byte, tokenizerFileDataLength)
 	js.CopyBytesToGo(tokenizerFileBytes, tokenizerFileData)
 
-	prompt = inputs[4].String()
-
 	runState = llama2.NewRunState(config)
 
 	isSharedWeights := config.VocabSize > 0
@@ -61,50 +58,76 @@ func prepare(_ js.Value, inputs []js.Value) interface{} {
 		llmSteps = config.SeqLen
 	}
 
-	return []interface{}{0, 1}
+	return nil
 }
 
 func generate(_ js.Value, inputs []js.Value) interface{} {
-	pos := inputs[1].Int()
-	token := inputs[2].Int()
-	llama2.Transformer(token, pos, config, runState, transformerWeights)
-
+	prompt := inputs[0].String()
 	promptTokens := vocab.Encode(prompt)
-	var next int
-	if pos < len(promptTokens) {
-		next = promptTokens[pos]
-	} else {
-		if llmTemperature == 0 {
-			next = nn.ArgMax(runState.Logits)
+	timeStart := time.Now()
+	pos, token := 0, 1
+	for pos < llmSteps {
+		// forward the transformer to get logits for the next token
+		llama2.Transformer(token, pos, config, runState, transformerWeights)
+
+		var next int
+		if pos < len(promptTokens) {
+			next = promptTokens[pos]
 		} else {
-			for q := 0; q < config.VocabSize; q++ {
-				runState.Logits[q] /= float32(llmTemperature)
-			}
-			nn.SoftMax(runState.Logits)
-			if llmTopP <= 0 || llmTopP >= 1 {
-				next = nn.Sample(runState.Logits)
+			// sample the next token
+			if llmTemperature == 0 {
+				// greedy argmax sampling
+				next = nn.ArgMax(runState.Logits)
 			} else {
-				next = nn.SampleTopP(runState.Logits, float32(llmTopP))
+				// apply the temperature to the logits
+				for q := 0; q < config.VocabSize; q++ {
+					runState.Logits[q] /= float32(llmTemperature)
+				}
+				// apply softmax to the logits to the probabilities for next token
+				nn.SoftMax(runState.Logits)
+				// we now want to sample from this distribution to get the next token
+				if llmTopP <= 0 || llmTopP >= 1 {
+					// simply sample from the predicted probability distribution
+					next = nn.Sample(runState.Logits)
+				} else {
+					// top-p (nucleus) sampling, clamping the least likely tokens to zero
+					next = nn.SampleTopP(runState.Logits, float32(llmTopP))
+				}
 			}
 		}
-	}
-	pos++
+		pos++
 
-	if next == 1 {
-		return []interface{}{0, -1}
-	}
+		// data-dependent terminating condition: the BOS (1) token delimits sequences
+		if next == 1 {
+			break
+		}
 
-	var tokenStr string
-	if token == 1 && vocab.Words[next][0] == ' ' {
-		tokenStr = vocab.Words[next][1:]
-	} else {
-		tokenStr = vocab.Words[next]
-	}
-	fmt.Println(tokenStr)
-	go inputs[0].Invoke(tokenStr)
+		// following BOS (1) token, sentencepiece decoder strips any leading whitespace
+		var tokenStr string
+		if token == 1 && vocab.Words[next][0] == ' ' {
+			tokenStr = vocab.Words[next][1:]
+		} else {
+			tokenStr = vocab.Words[next]
+		}
+		fmt.Println(tokenStr)
+		appendText(tokenStr)
 
-	token = next
-	return []interface{}{pos, token}
+		// advance forward
+		token = next
+	}
+	fmt.Println()
+
+	fmt.Printf("achieved tok/s: %f\n", float64(pos-1)/time.Since(timeStart).Seconds())
+
+	return nil
+}
+
+const answerElementClass = "answer"
+
+func appendText(text string) {
+	answerElements := js.Global().Get("document").Call("getElementsByClassName", answerElementClass)
+	lastAnswerElement := answerElements.Index(answerElements.Length() - 1)
+	lastAnswerElement.Set("textContent", lastAnswerElement.Get("textContent").String()+text)
 }
 
 func registerFunctions() {
