@@ -1,3 +1,9 @@
+NProgress.configure({
+    parent: '#container',
+    showSpinner: false
+});
+NProgress.start();
+
 const input = document.querySelector('input');
 const submitButton = document.getElementById('submit');
 const container = document.getElementById('container');
@@ -21,7 +27,6 @@ const appendAnswerText = text => {
 }
 
 var worker = new Worker('worker.js');
-NProgress.start();
 worker.addEventListener('message', ({ data }) => {
     const { type, payload } = data;
 

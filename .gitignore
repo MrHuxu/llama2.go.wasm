@@ -1,3 +1,5 @@
 .DS_Store
-*.bin
+models/*
+!models/tokenizer.bin
 *.wasm
+.vercel

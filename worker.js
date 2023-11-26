@@ -4,7 +4,7 @@ const go = new Go();
 
 const isLocalhost = () => {
     var url = self.location.origin;
-    return url.indexOf('127.0.0.1') !== -1 || url.indexOf('localhost') !== -1;
+    return url.indexOf('127.0.0.1:1234') !== -1 || url.indexOf('localhost:1234') !== -1;
 }
 
 const sendAppendAnswerText = text => {
@@ -31,8 +31,7 @@ const sendModelLoaded = () => {
 }
 
 
-const tokenizerURL = isLocalhost() ? self.location.origin + '/' + 'models/tokenizer.bin'
-    : 'https://github.com/karpathy/llama2.c/raw/master/tokenizer.bin';
+const tokenizerURL = self.location.origin + '/' + 'models/tokenizer.bin';
 const modelURL = isLocalhost() ? self.location.origin + '/' + 'models/stories15M.bin'
     : 'https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin';
 
