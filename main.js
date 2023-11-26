@@ -31,6 +31,7 @@ worker.addEventListener('message', ({ data }) => {
 
 const enableInput = () => {
     input.disabled = false;
+    input.focus();
 }
 const disableInput = () => {
     input.disabled = true;
@@ -43,6 +44,8 @@ const handleInput = () => {
     }
 }
 const handleInputKeyPress = event => {
+    if (input.value === '') return;
+
     if (event.key === 'Enter') {
         event.preventDefault();
         handleSubmit();
@@ -56,13 +59,18 @@ const enableSubmit = () => {
     submitButton.disabled = false;
 }
 const handleSubmit = () => {
+    const userInput = input.value;
+
+    if (userInput === '') {
+        return;
+    }
+
     disableInput();
     disableSubmit();
-    const userInput = input.value;
 
     const newPrompt = document.createElement('div');
     newPrompt.classList.add('prompt');
-    newPrompt.textContent = userInput === '' ? 'User input' : userInput;
+    newPrompt.textContent = userInput;
     container.appendChild(newPrompt);
     input.value = '';
 

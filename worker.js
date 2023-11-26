@@ -53,7 +53,7 @@ Promise.all([
         tokenizerFileLength,
     );
 
-    generate('once upon a time', appendAnswerText, enableInput);
+    generate('Once upon a time', appendAnswerText, enableInput);
 });
 
 self.addEventListener('message', ({ data }) => {

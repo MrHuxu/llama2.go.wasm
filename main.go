@@ -99,13 +99,10 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 		} else {
 			tokenStr = vocab.Words[next]
 		}
-		fmt.Println(tokenStr)
 		inputs[1].Invoke(tokenStr)
 
 		token = next
 	}
-	fmt.Println()
-
 	fmt.Printf("achieved tok/s: %f\n", float64(pos-1)/time.Since(timeStart).Seconds())
 
 	inputs[2].Invoke()
