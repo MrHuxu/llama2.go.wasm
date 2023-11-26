@@ -48,8 +48,13 @@ header h1 {
     color: #444;
 }
 
-.github-link {
+#model {
+    font-size: 1rem;
+}
+
+#model>a {
     color: #555;
+    text-decoration: underline;
 }
 
 .prompt {
