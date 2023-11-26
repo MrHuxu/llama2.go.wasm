@@ -19,7 +19,8 @@ const enableInput = text => {
     });
 };
 
-const tokenizerURL = self.location.origin + '/' + 'models/tokenizer.bin';
+const tokenizerURL = isLocalhost() ? self.location.origin + '/' + 'models/tokenizer.bin'
+    : 'https://github.com/karpathy/llama2.c/raw/master/tokenizer.bin';
 const modelURL = isLocalhost() ? self.location.origin + '/' + 'models/stories15M.bin'
     : 'https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin';
 

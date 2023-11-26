@@ -19,9 +19,14 @@ To run the project locally, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/MrHuxu/llama2.go.wasm.git`
 2. Navigate to the project directory: `cd llama2.go.wasm`
-3. Build the WebAssembly binary: `make build`
-4. Start the development server: `make dev`
-5. Open your web browser and visit: `http://localhost:1234`
+3. Create directory `models` and download these files into it
+
+   - `https://github.com/karpathy/llama2.c/raw/master/tokenizer.bin`
+   - `https://huggingface.co/karpathy/tinyllamas/resolve/main/stories15M.bin`
+
+4. Build the WebAssembly binary: `make build`
+5. Start the development server: `make dev`
+6. Open your web browser and visit: `http://localhost:1234`
 
 ## Usage
 
