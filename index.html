@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Llama2 Go WASM</title>
+  <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 
@@ -19,7 +20,7 @@
         Model: <a href="https://huggingface.co/karpathy/tinyllamas/blob/main/stories15M.bin" target="_blank">stories15M.bin</a>
       </div>
     </header>
-    <div class="container">
+    <div id="container">
       <div class="prompt">Once upon a time</div>
       <div class="answer"></div>
     </div>
@@ -44,6 +45,7 @@
   </a>
 
   <script src="./static/wasm_exec.js"></script>
+  <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
   <script src="main.js"></script>
 </body>
 

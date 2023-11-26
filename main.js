@@ -2,19 +2,26 @@ const input = document.querySelector('input');
 const submitButton = document.getElementById('submit');
 const container = document.querySelector('.container');
 
-const answerElementClass = "answer";
+const breakLineChar = '<0x0A>';
+const answerElementClass = 'answer';
 const appendAnswerText = text => {
     const answerElements = document.getElementsByClassName(answerElementClass);
     const answerElement = answerElements[answerElements.length - 1];
-    answerElement.setAttribute(
-        'text',
-        ((answerElement.getAttribute('text') || '') + text).replace('<0x0A>', '\x0a')
-    );
+
+    let ele;
+    if (text === breakLineChar) {
+        ele = document.createElement('br');
+    } else {
+        ele = document.createElement('span');
+        ele.textContent = text;
+    }
+    answerElement.appendChild(ele);
 
     container.scrollTop = container.scrollHeight;
 }
 
 var worker = new Worker('worker.js');
+NProgress.start();
 worker.addEventListener('message', ({ data }) => {
     const { type, payload } = data;
 
@@ -24,6 +31,12 @@ worker.addEventListener('message', ({ data }) => {
             break;
         case 'enableInput':
             enableInput();
+            break;
+        case 'modelLoading':
+            NProgress.set(payload);
+            break;
+        case 'modelLoaded':
+            NProgress.done();
             break;
     }
 });

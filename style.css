@@ -23,20 +23,18 @@ body {
     margin-left: calc(50% - 400px);
 }
 
-.container {
-    margin-top: 25px;
-    position: absolute;
-    height: calc(100% - 305px);
-    overflow: auto;
-    padding-bottom: 10px;
-    display: flex;
-    flex-direction: column;
+@media (max-width: 800px) {
+    #application {
+        width: 100%;
+        margin-left: 0;
+    }
 }
 
 header {
     position: absolute;
     top: 200px;
     right: 0;
+    padding: 0 8px;
     border-bottom: black 1px solid;
     display: flex;
     justify-content: space-between;
@@ -55,6 +53,16 @@ header h1 {
 #model>a {
     color: #555;
     text-decoration: underline;
+}
+
+#container {
+    margin-top: 25px;
+    position: absolute;
+    height: calc(100% - 305px);
+    overflow: auto;
+    padding: 0 8px 10px 8px;
+    display: flex;
+    flex-direction: column;
 }
 
 .prompt {
@@ -78,11 +86,6 @@ header h1 {
     max-width: 90%;
 }
 
-.answer:after {
-    content: attr(text);
-    white-space: pre-line;
-}
-
 footer {
     background-color: #edf2f7;
     width: calc(100% - 16px);
@@ -96,8 +99,8 @@ footer {
 }
 
 header,
-.container {
-    width: 100%;
+#container {
+    width: calc(100% - 16px);
 }
 
 input[type="text"] {
