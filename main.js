@@ -1,6 +1,6 @@
 const input = document.querySelector('input');
 const submitButton = document.getElementById('submit');
-const container = document.querySelector('.container');
+const container = document.getElementById('container');
 
 const breakLineChar = '<0x0A>';
 const answerElementClass = 'answer';

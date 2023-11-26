@@ -50,8 +50,6 @@ Promise.all([
 }).then(([content1, content2]) => {
     tokenizerFileContent = content1;
     modelFileContent = content2;
-
-    sendModelLoaded();
 }).then(
     () => fetch('main.wasm')
 ).then(
@@ -67,6 +65,7 @@ Promise.all([
         new Uint8Array(tokenizerFileContent),
         tokenizerFileLength,
     );
+    sendModelLoaded();
 
     generate('Once upon a time', sendAppendAnswerText, sendEnableInput);
 });
