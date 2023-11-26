@@ -36,6 +36,7 @@ To run the project locally, follow these steps:
 - `main.go`: Go source code for the WebAssembly application.
 - `main.js`: JavaScript code for interacting with the UI.
 - `worker.js`: JavaScript code for interacting with the WebAssembly module.
+- `style.css`: Stylesheet for defining the visual appearance of the application.
 - `static/`: Static assets such as WASM runtime and logo image.
 
 ## Related Projects

@@ -1,0 +1,111 @@
+html,
+body,
+.full-height {
+    height: 100%;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin-top: -18px;
+    font-family: Arial, sans-serif;
+    background-color: #c2f2ff;
+    color: #374151;
+}
+
+#application {
+    position: relative;
+    width: 800px;
+    margin-left: calc(50% - 400px);
+}
+
+.container {
+    margin-top: 25px;
+    position: absolute;
+    height: calc(100% - 305px);
+    overflow: auto;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    position: absolute;
+    top: 200px;
+    right: 0;
+    border-bottom: black 1px solid;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.1rem;
+    color: #444;
+}
+
+.github-link {
+    color: #555;
+}
+
+.prompt {
+    background-color: #edf2f7;
+    border-radius: 0.5rem;
+    margin-top: 8px;
+    padding: 8px;
+    align-self: flex-end;
+}
+
+.answer {
+    background-color: #d1fae5;
+    border-radius: 0.5rem;
+    margin-top: 8px;
+    padding: 8px;
+    align-self: flex-start;
+    max-width: 90%;
+}
+
+.answer:after {
+    content: attr(text);
+    white-space: pre-line;
+}
+
+footer {
+    background-color: #edf2f7;
+    width: calc(100% - 16px);
+    padding: 8px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+}
+
+header,
+.container {
+    width: 100%;
+}
+
+input[type="text"] {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    padding: 8px;
+    margin-right: 8px;
+}
+
+button {
+    background-color: #3b82f6;
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 0.5rem;
+}
+
+button:disabled {
+    opacity: 0.5;
+}

@@ -6,111 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Llama2 Go WASM</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <style>
-    html, body, #application {
-      height: 100vh;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #c2f2ff;
-      color: #374151;
-    }
-
-    #application {
-      position: relative;
-      padding: 0 10%;
-    }
-
-    .container {
-      position: absolute;
-      height: calc(100vh - 64px - 72px - 150px);
-      overflow: auto;
-      padding-bottom: 10px;
-    }
-
-    header {
-      padding: 8px;
-      position: absolute;
-      top: 200px;
-      right: 0;
-      border-bottom: black 1px solid;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      font-size: 1.1rem;
-      color: #444;
-    }
-
-    .github-link {
-      color: #666;
-      margin-left: 8px;
-    }
-
-    main {
-      margin-top: 64px;
-      padding: 0 8px;
-    }
-
-    .prompt {
-      background-color: #edf2f7;
-      border-radius: 0.5rem;
-      margin-top: 8px;
-      padding: 8px;
-      align-self: flex-end;
-    }
-
-    .answer {
-      background-color: #d1fae5;
-      border-radius: 0.5rem;
-      margin-top: 8px;
-      padding: 8px;
-      align-self: flex-start;
-    }
-
-    footer {
-      background-color: #edf2f7;
-      padding: 8px;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      align-items: center;
-    }
-
-    header, footer, .container {
-      width: 800px;
-      left: calc(50% - 400px);
-    }
-
-    input[type="text"] {
-      width: 100%;
-      border-radius: 0.5rem;
-      border: 1px solid #d1d5db;
-      padding: 8px;
-      margin-right: 8px;
-    }
-
-    button {
-      background-color: #3b82f6;
-      color: #fff;
-      padding: 8px;
-      border-radius: 0.5rem;
-      opacity: 0.5;
-    }
-
-    button:disabled {
-      opacity: 1;
-    }
-  </style>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
-  <div id="application">
+  <div id="application" class="full-height">
     <p align="center">
       <img src="/static/logo.jpeg" width="200" />
     </p>
@@ -120,12 +20,10 @@
         <i class="fab fa-github"></i>
       </a>
     </header>
-    <main>
-      <div class="container">
-        <div class="prompt">once upon a time</div>
-        <div class="answer"></div>
-      </div>
-    </main>
+    <div class="container">
+      <div class="prompt">once upon a time</div>
+      <div class="answer"></div>
+    </div>
     <footer>
       <input type="text" placeholder="Enter your prompt" oninput="handleInput()" onkeydown="handleInputKeyPress(event)"
         disabled>
