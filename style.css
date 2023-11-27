@@ -13,17 +13,19 @@ body {
 body {
     margin-top: -18px;
     font-family: Arial, sans-serif;
-    background-color: #c2f2ff;
+    background-color: #f0f5f8;
     color: #374151;
 }
 
 #application {
     position: relative;
-    width: 800px;
-    margin-left: calc(50% - 400px);
+    width: 1024px;
+    margin-left: calc(50% - 512px);
+    background-color: #c2f2ff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1024px) {
     #application {
         width: 100%;
         margin-left: 0;
@@ -34,7 +36,7 @@ header {
     position: absolute;
     top: 200px;
     right: 0;
-    padding: 0 8px;
+    padding: 0 15px;
     border-bottom: black 1px solid;
     display: flex;
     justify-content: space-between;
@@ -60,7 +62,7 @@ header h1 {
     position: absolute;
     height: calc(100% - 305px);
     overflow: auto;
-    padding: 0 8px 10px 8px;
+    padding: 0 15px 10px 15px;
     display: flex;
     flex-direction: column;
 }
@@ -100,7 +102,7 @@ footer {
 
 header,
 #container {
-    width: calc(100% - 16px);
+    width: calc(100% - 30px);
 }
 
 input[type="text"] {

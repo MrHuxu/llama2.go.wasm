@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"syscall/js"
 	"time"
@@ -62,10 +61,11 @@ func prepare(_ js.Value, inputs []js.Value) interface{} {
 }
 
 func generate(_ js.Value, inputs []js.Value) interface{} {
+	defer inputs[2].Invoke()
+
 	prompt := inputs[0].String()
 	promptTokens := vocab.Encode(prompt)
-	timeStart := time.Now()
-	pos, token := 0, 1
+	pos, token, timeStart := 0, 1, time.Now()
 	for pos < llmSteps {
 		llama2.Transformer(token, pos, config, runState, transformerWeights)
 
@@ -73,19 +73,11 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 		if pos < len(promptTokens) {
 			next = promptTokens[pos]
 		} else {
-			if llmTemperature == 0 {
-				next = nn.ArgMax(runState.Logits)
-			} else {
-				for q := 0; q < config.VocabSize; q++ {
-					runState.Logits[q] /= float32(llmTemperature)
-				}
-				nn.SoftMax(runState.Logits)
-				if llmTopP <= 0 || llmTopP >= 1 {
-					next = nn.Sample(runState.Logits)
-				} else {
-					next = nn.SampleTopP(runState.Logits, float32(llmTopP))
-				}
+			for q := 0; q < config.VocabSize; q++ {
+				runState.Logits[q] /= float32(llmTemperature)
 			}
+			nn.SoftMax(runState.Logits)
+			next = nn.SampleTopP(runState.Logits, float32(llmTopP))
 		}
 		pos++
 
@@ -103,9 +95,8 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 
 		token = next
 	}
-	fmt.Printf("achieved tok/s: %f\n", float64(pos-1)/time.Since(timeStart).Seconds())
+	log.Printf("achieved tok/s: %f\n", float64(pos-1)/time.Since(timeStart).Seconds())
 
-	inputs[2].Invoke()
 	return nil
 }
 
