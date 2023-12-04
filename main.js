@@ -8,6 +8,7 @@ const input = document.querySelector('input');
 const submitButton = document.getElementById('submit');
 const container = document.getElementById('container');
 
+const tokenSpeedPrefix = '[TOKEN_SPEED]';
 const breakLineChar = '<0x0A>';
 const answerElementClass = 'answer';
 const appendAnswerText = text => {
@@ -15,7 +16,12 @@ const appendAnswerText = text => {
     const answerElement = answerElements[answerElements.length - 1];
 
     let ele;
-    if (text === breakLineChar) {
+    if (text.startsWith(tokenSpeedPrefix)) {
+        answerElement.appendChild(document.createElement('br'));
+        answerElement.appendChild(document.createElement('br'));
+        ele = document.createElement('strong');
+        ele.textContent = `[Achieved tok/s: ${text.replace(tokenSpeedPrefix, '')}]`;
+    } else if (text === breakLineChar) {
         ele = document.createElement('br');
     } else {
         ele = document.createElement('span');

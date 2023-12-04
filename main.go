@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"syscall/js"
 	"time"
@@ -95,7 +96,7 @@ func generate(_ js.Value, inputs []js.Value) interface{} {
 
 		token = next
 	}
-	log.Printf("achieved tok/s: %f\n", float64(pos-1)/time.Since(timeStart).Seconds())
+	inputs[1].Invoke(fmt.Sprintf("[TOKEN_SPEED]%f", float64(pos-1)/time.Since(timeStart).Seconds()))
 
 	return nil
 }
