@@ -32,6 +32,12 @@ body {
     }
 }
 
+header,
+#container {
+    width: calc(100% - 30px);
+}
+
+
 header {
     position: absolute;
     top: 200px;
@@ -100,9 +106,8 @@ footer {
     align-items: center;
 }
 
-header,
-#container {
-    width: calc(100% - 30px);
+footer * {
+    font-size: 1rem;
 }
 
 input[type="text"] {
